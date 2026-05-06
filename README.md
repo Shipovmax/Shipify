@@ -22,7 +22,6 @@
 ### 1. Клонируй и установи зависимости
 
 ```bash
-git clone <твой-репо>
 cd Shipify
 python3 -m venv .venv
 source .venv/bin/activate  # macOS/Linux
