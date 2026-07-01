@@ -1,74 +1,83 @@
 # Spotify Library Manager
 
-Персональный инструмент для автоматического переноса топ-треков из статистики Spotify в личную медиатеку и плейлисты.
+A personal tool for automatically moving your top tracks from Spotify statistics into your personal library and playlists.
 
-## Возможности (v1.3 + плейлисты)
+## Features (v1.3 + Playlists)
 
-- Получение топ-треков за **4 недели / 6 месяцев / всё время**
-- **Предпросмотр с чекбоксами** — снять можно любой трек перед добавлением
-- Быстрое добавление без предпросмотра (для рутины)
-- **Работа с плейлистами**: создание новых, добавление в существующие
-- Автоматическая проверка дублей (и в библиотеке, и в плейлистах)
-- Полная очистка библиотеки с двойным подтверждением (`DELETE` текстом)
-- **Прогресс-бар** для всех долгих операций
-- **Не блокирует UI** — все операции в фоновых потоках
-- **Retry на rate limit** (429) и временные 5xx
-- Экспорт лога в `.txt`
-- Сохранение настроек между запусками
-- Файловое логирование в `app.log`
+- Fetch top tracks for **4 weeks / 6 months / all time**
+- **Preview with checkboxes** — uncheck any track before adding it
+- Fast add without preview (for routine updates)
+- **Playlist management**: create new playlists or add tracks to existing ones
+- Automatic duplicate checking (both in your library and within playlists)
+- Full library cleanup with double confirmation (typing `DELETE` to confirm)
+- **Progress bar** for all long-running operations
+- **Non-blocking UI** — all operations run smoothly in background threads
+- **Automatic retries on rate limits** (429) and temporary 5xx server errors
+- Export logs to `.txt`
+- Save application settings between sessions
+- File logging to `app.log`
 
-## Установка
+---
 
-### 1. Клонируй и установи зависимости
+## Installation
+
+### 1. Clone and Install Dependencies
 
 ```bash
 cd Shipify
 python3 -m venv .venv
 source .venv/bin/activate  # macOS/Linux
+# .venv\Scripts\activate  # Windows
 pip install -r requirements.txt
+
 ```
 
-### 2. Создай Spotify-приложение
+### 2. Create a Spotify Application
 
-1. Зайди на [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
-2. **Create app** → впиши любое имя
-3. В **Redirect URIs** добавь: `http://127.0.0.1:8080/callback`
-4. Сохрани и скопируй **Client ID** и **Client Secret**
+1. Go to the [Spotify Developer Dashboard](https://developer.spotify.com/)
+2. Click **Create app** → fill in any name and description
+3. In **Redirect URIs**, add exactly: `http://127.0.0.1:8080/callback`
+4. Save the changes and copy your **Client ID** and **Client Secret**
 
-### 3. Настрой `.env`
+### 3. Configure `.env`
 
 ```bash
 cp .env.example .env
+
 ```
 
-Открой `.env` и впиши свои `SPOTIFY_CLIENT_ID` и `SPOTIFY_CLIENT_SECRET`.
+Open the `.env` file and fill in your `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET`.
 
-### 4. Запуск
+### 4. Run the Application
 
 ```bash
 python app.py
+
 ```
 
-При первом запуске откроется браузер с авторизацией Spotify. Дальше токен кешируется в `.spotify_cache`.
+On the first run, a browser window will open asking you to log in and authorize the app via Spotify. After a successful login, the authentication token will be cached locally in `.spotify_cache`.
 
-## Структура проекта
+---
+
+## Project Structure
 
 ```
 spotify-library-manager/
 ├── app.py               # GUI (CustomTkinter)
-├── preview_window.py    # Окно предпросмотра с чекбоксами
-├── spotify_client.py    # Обёртка над Spotify API (retry, batching, пагинация)
-├── config.py            # Загрузка .env
+├── preview_window.py    # Preview window with checkboxes
+├── spotify_client.py    # Wrapper around Spotify API (retry, batching, pagination)
+├── config.py            # Loads .env configuration
 ├── requirements.txt
 ├── .env.example
 └── .gitignore
+
 ```
 
-## Что под капотом
+---
 
-- **Архитектура**: GUI отделён от бизнес-логики. `SpotifyClient` можно использовать без UI (например, для CLI или cron-задач в будущем).
-- **Batching**: Spotify API ограничивает 50 ID за запрос — клиент сам разбивает большие списки.
-- **Pagination**: при выгрузке всей библиотеки используется правильная стратегия (offset=0 при удалении, чтобы не пропустить треки из-за сдвига).
-- **Threading**: все долгие операции в `threading.Thread`, обновление UI через `self.after(0, ...)`.
+## Under the Hood
 
-
+* **Architecture**: The GUI is completely decoupled from the business logic. `SpotifyClient` can be used standalone without the UI (e.g., for a CLI tool or cron jobs in the future).
+* **Batching**: The Spotify API limits batch requests to 50 IDs at a time. The client automatically splits large lists of tracks into appropriate chunks behind the scenes.
+* **Pagination**: A proper pagination strategy is implemented when fetching or modifying the entire library (e.g., keeping `offset=0` during deletion tasks to prevent skipping tracks due to real-time index shifts).
+* **Threading**: All heavy blocking network operations run asynchronously inside a `threading.Thread`, while safe UI updates are dispatched back to the main loop via `self.after(0, ...)`.
