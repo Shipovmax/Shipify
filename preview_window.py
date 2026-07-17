@@ -1,7 +1,7 @@
-"""Окно предпросмотра треков с чекбоксами."""
+"""Track preview window with checkboxes."""
 from __future__ import annotations
 
-from typing import Callable
+from typing import Any, Callable
 
 import customtkinter as ctk
 
@@ -9,19 +9,19 @@ from spotify_client import Track
 
 
 class PreviewWindow(ctk.CTkToplevel):
-    """
-    Модальное окно со списком треков и чекбоксами.
-    После закрытия вызывает on_confirm(selected_track_ids) если юзер подтвердил,
-    или ничего если отменил.
+    """Modal window listing tracks with checkboxes.
+
+    On close, calls `on_confirm(selected_track_ids)` if the user confirmed
+    the selection, or does nothing if they cancelled.
     """
 
     def __init__(
         self,
-        master,
+        master: Any,
         tracks: list[Track],
         on_confirm: Callable[[list[str]], None],
-        title: str = "Предпросмотр треков",
-        confirm_text: str = "Добавить выбранные",
+        title: str = "Track Preview",
+        confirm_text: str = "Add Selected",
     ) -> None:
         super().__init__(master)
         self.title(title)
@@ -36,25 +36,25 @@ class PreviewWindow(ctk.CTkToplevel):
         self._build_ui(confirm_text)
 
     def _build_ui(self, confirm_text: str) -> None:
-        # Заголовок + счётчик
+        # Header + counter
         header = ctk.CTkFrame(self, fg_color="transparent")
         header.pack(fill="x", padx=20, pady=(20, 10))
 
         self._counter_label = ctk.CTkLabel(
             header,
-            text=f"Выбрано: {len(self._tracks)} из {len(self._tracks)}",
+            text=f"Selected: {len(self._tracks)} of {len(self._tracks)}",
             font=ctk.CTkFont(size=14, weight="bold"),
         )
         self._counter_label.pack(side="left")
 
         ctk.CTkButton(
-            header, text="Снять все", width=100, command=self._deselect_all
+            header, text="Deselect All", width=100, command=self._deselect_all
         ).pack(side="right", padx=5)
         ctk.CTkButton(
-            header, text="Выбрать все", width=100, command=self._select_all
+            header, text="Select All", width=100, command=self._select_all
         ).pack(side="right", padx=5)
 
-        # Скроллируемый список
+        # Scrollable list
         scroll = ctk.CTkScrollableFrame(self, label_text="")
         scroll.pack(fill="both", expand=True, padx=20, pady=10)
 
@@ -103,13 +103,13 @@ class PreviewWindow(ctk.CTkToplevel):
                 width=50,
             ).pack(side="right", padx=10)
 
-        # Кнопки действий
+        # Action buttons
         actions = ctk.CTkFrame(self, fg_color="transparent")
         actions.pack(fill="x", padx=20, pady=(10, 20))
 
         ctk.CTkButton(
             actions,
-            text="Отмена",
+            text="Cancel",
             fg_color="gray",
             hover_color="darkgray",
             command=self.destroy,
@@ -134,7 +134,7 @@ class PreviewWindow(ctk.CTkToplevel):
     def _update_counter(self) -> None:
         selected = sum(1 for v in self._vars.values() if v.get())
         self._counter_label.configure(
-            text=f"Выбрано: {selected} из {len(self._tracks)}"
+            text=f"Selected: {selected} of {len(self._tracks)}"
         )
 
     def _confirm(self) -> None:

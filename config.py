@@ -1,4 +1,4 @@
-"""Загрузка и валидация конфигурации из .env."""
+"""Loading and validation of configuration from .env."""
 from __future__ import annotations
 
 import os
@@ -10,6 +10,16 @@ from dotenv import load_dotenv
 
 @dataclass(frozen=True)
 class Config:
+    """Immutable application configuration loaded from environment variables.
+
+    Attributes:
+        client_id: Spotify application client ID.
+        client_secret: Spotify application client secret.
+        redirect_uri: OAuth redirect URI registered with the Spotify app.
+        cache_path: Filesystem path where the OAuth token cache is stored.
+        scope: Space-separated list of Spotify OAuth scopes requested.
+    """
+
     client_id: str
     client_secret: str
     redirect_uri: str
@@ -18,7 +28,16 @@ class Config:
 
     @classmethod
     def load(cls) -> "Config":
-        # Ищем .env рядом с исполняемым файлом
+        """Load configuration from a `.env` file next to this module.
+
+        Returns:
+            A populated, validated `Config` instance.
+
+        Raises:
+            ConfigError: If `SPOTIFY_CLIENT_ID` or `SPOTIFY_CLIENT_SECRET`
+                is missing or still set to its placeholder value.
+        """
+        # Look for .env next to the executable file
         env_path = Path(__file__).parent / ".env"
         load_dotenv(env_path)
 
@@ -29,11 +48,11 @@ class Config:
 
         if not client_id or client_id == "your_client_id_here":
             raise ConfigError(
-                "SPOTIFY_CLIENT_ID не задан. Скопируй .env.example в .env и заполни."
+                "SPOTIFY_CLIENT_ID is not set. Copy .env.example to .env and fill it in."
             )
         if not client_secret or client_secret == "your_client_secret_here":
             raise ConfigError(
-                "SPOTIFY_CLIENT_SECRET не задан. Скопируй .env.example в .env и заполни."
+                "SPOTIFY_CLIENT_SECRET is not set. Copy .env.example to .env and fill it in."
             )
 
         return cls(
@@ -45,4 +64,4 @@ class Config:
 
 
 class ConfigError(Exception):
-    """Ошибка конфигурации."""
+    """Raised when the application configuration is missing or invalid."""
