@@ -1,4 +1,5 @@
 """Loading and validation of configuration from .env."""
+
 from __future__ import annotations
 
 import os
@@ -24,7 +25,9 @@ class Config:
     client_secret: str
     redirect_uri: str
     cache_path: str
-    scope: str = "user-top-read user-library-read user-library-modify playlist-modify-private playlist-modify-public playlist-read-private"
+    scope: str = (
+        "user-top-read user-library-read user-library-modify playlist-modify-private playlist-modify-public playlist-read-private"
+    )
 
     @classmethod
     def load(cls) -> "Config":
@@ -43,7 +46,9 @@ class Config:
 
         client_id = os.getenv("SPOTIFY_CLIENT_ID", "").strip()
         client_secret = os.getenv("SPOTIFY_CLIENT_SECRET", "").strip()
-        redirect_uri = os.getenv("SPOTIFY_REDIRECT_URI", "http://127.0.0.1:8080/callback").strip()
+        redirect_uri = os.getenv(
+            "SPOTIFY_REDIRECT_URI", "http://127.0.0.1:8080/callback"
+        ).strip()
         cache_path = os.getenv("SPOTIFY_CACHE_PATH", ".spotify_cache").strip()
 
         if not client_id or client_id == "your_client_id_here":

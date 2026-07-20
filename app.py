@@ -210,9 +210,9 @@ class SpotifyManagerApp(ctk.CTk):
         ctk.CTkButton(
             log_header, text="Export Log", width=110, command=self._export_log
         ).pack(side="right")
-        ctk.CTkButton(
-            log_header, text="Clear", width=90, command=self._clear_log
-        ).pack(side="right", padx=6)
+        ctk.CTkButton(log_header, text="Clear", width=90, command=self._clear_log).pack(
+            side="right", padx=6
+        )
 
         self._log_text = ctk.CTkTextbox(self, height=180, font=ctk.CTkFont(size=12))
         self._log_text.pack(fill="both", expand=True, padx=24, pady=(4, 16))
@@ -435,9 +435,7 @@ class SpotifyManagerApp(ctk.CTk):
         def on_done(playlists: list[dict[str, Any]]) -> None:
             self._playlists_cache = playlists
             if not playlists:
-                self._playlist_menu.configure(
-                    values=["— no editable playlists —"]
-                )
+                self._playlist_menu.configure(values=["— no editable playlists —"])
                 self._playlist_var.set("— no editable playlists —")
                 return
             labels = [f"{p['name']} ({p['tracks_total']})" for p in playlists]
@@ -462,9 +460,7 @@ class SpotifyManagerApp(ctk.CTk):
         client = self._client
         assert client is not None
 
-        dlg = ctk.CTkInputDialog(
-            text="New playlist name:", title="New Playlist"
-        )
+        dlg = ctk.CTkInputDialog(text="New playlist name:", title="New Playlist")
         name = dlg.get_input()
         if not name or not name.strip():
             return

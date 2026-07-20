@@ -275,7 +275,11 @@ class SpotifyClient:
 
         if not to_add:
             if progress:
-                progress(len(track_ids), len(track_ids), "All tracks are already in the library")
+                progress(
+                    len(track_ids),
+                    len(track_ids),
+                    "All tracks are already in the library",
+                )
             return result
 
         done = 0
@@ -503,7 +507,9 @@ class SpotifyClient:
 
         if skip_duplicates:
             if progress:
-                progress(0, len(track_ids), "Checking for duplicates in the playlist...")
+                progress(
+                    0, len(track_ids), "Checking for duplicates in the playlist..."
+                )
             existing = self.get_playlist_track_ids(playlist_id)
             to_add = [t for t in track_ids if t not in existing]
             result.skipped = len(track_ids) - len(to_add)
@@ -512,7 +518,11 @@ class SpotifyClient:
 
         if not to_add:
             if progress:
-                progress(len(track_ids), len(track_ids), "All tracks are already in the playlist")
+                progress(
+                    len(track_ids),
+                    len(track_ids),
+                    "All tracks are already in the playlist",
+                )
             return result
 
         # playlist_add_items accepts a maximum of 100 items per call
