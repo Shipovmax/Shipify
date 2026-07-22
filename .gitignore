@@ -1,12 +1,11 @@
-cat > .gitignore << 'EOF'
-# === Секреты и токены ===
+# Secrets & tokens
 .env
 .env.local
 .spotify_cache
 .spotify_cache.json
 .user_settings.json
 
-# === Python ===
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -17,29 +16,29 @@ __pycache__/
 dist/
 build/
 
-# === Виртуальные окружения ===
+# Virtual environments
 .venv/
 venv/
 env/
 ENV/
 
-# === Логи ===
+# Logs
 *.log
 logs/
 
-# === IDE и редакторы ===
+# IDEs & editors
 .idea/
 .vscode/
 *.swp
 *.swo
 *~
 
-# === macOS ===
+# macOS
 .DS_Store
 .AppleDouble
 .LSOverride
 
-# === Тесты и покрытие ===
+# Tests & coverage
 .pytest_cache/
 .coverage
 htmlcov/
