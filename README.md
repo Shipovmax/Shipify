@@ -69,6 +69,7 @@ spotify-library-manager/
 ├── config.py            # Loads .env configuration
 ├── requirements.txt
 ├── .env.example
+├── LICENSE
 └── .gitignore
 
 ```
@@ -81,3 +82,10 @@ spotify-library-manager/
 * **Batching**: The Spotify API limits batch requests to 50 IDs at a time. The client automatically splits large lists of tracks into appropriate chunks behind the scenes.
 * **Pagination**: A proper pagination strategy is implemented when fetching or modifying the entire library (e.g., keeping `offset=0` during deletion tasks to prevent skipping tracks due to real-time index shifts).
 * **Threading**: All heavy blocking network operations run asynchronously inside a `threading.Thread`, while safe UI updates are dispatched back to the main loop via `self.after(0, ...)`.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
